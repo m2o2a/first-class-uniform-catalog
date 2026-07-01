@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: #0b0e14;
+}
+
+/* Signature motif: a stitched seam divider — nods to garment construction */
+.stitch {
+  border: none;
+  height: 0;
+  border-top: 2px dashed rgba(11, 14, 20, 0.16);
+}
+.stitch-light {
+  border-top: 2px dashed rgba(255, 255, 255, 0.22);
+}
+
+.fabric-texture {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #d62828;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #16308c;
+  color: #fff;
+}
