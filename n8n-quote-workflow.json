@@ -1,0 +1,48 @@
+{
+  "name": "First Class - حاسبة عرض السعر",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fc-quote",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [280, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ====== غيّر أرقامك هنا ======\nconst fabrics = {\n  cotton:         { name_ar: \"قطن\",          name_en: \"Cotton\",         base_price: 180 },\n  twill:          { name_ar: \"توين\",          name_en: \"Twill\",          base_price: 220 },\n  gabardine:      { name_ar: \"جبردين\",        name_en: \"Gabardine\",      base_price: 210 },\n  polyester_mix:  { name_ar: \"قطن مخلوط\",     name_en: \"Poly-cotton mix\", base_price: 160 }\n};\n\nconst logoPricePerLogo = 25;\nconst logoPlacementExtra = { chest: 0, back: 15, sleeve: 10 };\n\n// كل صف هنا: أقل عدد قطع تبدأ منه الخصم، ونسبة الخصم\nconst quantityTiers = [\n  { min_qty: 1,    discount_percent: 0 },\n  { min_qty: 50,   discount_percent: 5 },\n  { min_qty: 100,  discount_percent: 10 },\n  { min_qty: 300,  discount_percent: 15 },\n  { min_qty: 1000, discount_percent: 20 }\n];\n// ====== لغاية هنا بس اللي تغيره عادة ======\n\nconst body = $input.first().json.body || $input.first().json;\nconst quantity = Number(body.quantity) || 1;\nconst fabricId = body.fabricId || 'cotton';\nconst logoCount = Number(body.logoCount) || 0;\nconst logoPlacement = body.logoPlacement || 'chest';\nconst lang = body.lang || 'ar';\n\nconst fabric = fabrics[fabricId] || fabrics.cotton;\nconst extra = logoPlacementExtra[logoPlacement] ?? 0;\nconst perPieceBeforeDiscount = fabric.base_price + logoCount * (logoPricePerLogo + extra);\n\nconst tier = quantityTiers\n  .slice()\n  .sort((a, b) => a.min_qty - b.min_qty)\n  .filter(t => quantity >= t.min_qty)\n  .pop() || quantityTiers[0];\n\nconst perPiece = Math.round(perPieceBeforeDiscount * (1 - tier.discount_percent / 100));\nconst total = perPiece * quantity;\n\n// توصية بسيطة — غيّر أو زوّد الشروط زي ما يناسبك\nlet recommendation_ar = '';\nif (quantity >= 300 && fabricId !== 'polyester_mix') {\n  recommendation_ar = 'بما إن العدد كبير، خامة القطن المخلوط ممكن توفرلك في التكلفة الإجمالية من غير ما تأثر كتير على الجودة.';\n} else if (fabricId === 'twill') {\n  recommendation_ar = 'توين اختيار قوي ومتين، مناسب جدًا للاستخدام اليومي المكثف.';\n} else if (fabricId === 'gabardine') {\n  recommendation_ar = 'جبردين بيدي مظهر رسمي أنيق، مناسب لقطاعات زي الفنادق والشركات.';\n} else if (fabricId === 'cotton') {\n  recommendation_ar = 'القطن مريح وتنفسه عالي، اختيار موفق للأجواء الحارة والمطاعم.';\n}\n\nreturn [{\n  json: {\n    fabric_name_ar: fabric.name_ar,\n    fabric_name_en: fabric.name_en,\n    per_piece_price: perPiece,\n    quantity,\n    total_price: total,\n    discount_percent: tier.discount_percent,\n    currency: 'EGP',\n    recommendation_ar\n  }\n}];\n"
+      },
+      "id": "function1",
+      "name": "احسب السعر",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "respond1",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [760, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "احسب السعر", "type": "main", "index": 0 }]]
+    },
+    "احسب السعر": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  }
+}

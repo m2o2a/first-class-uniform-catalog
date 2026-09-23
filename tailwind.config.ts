@@ -13,6 +13,7 @@ const config: Config = {
         paper: "#F7F6F2",     // warm off-white section background
         royal: "#16308C",     // primary brand blue (from logo)
         signal: "#D62828",    // brand red (from logo)
+        gold: "#C9A24B",      // premium accent — used sparingly for highlights
         steel: "#5B6472",     // muted body text on light bg
         line: "#E4E2DC",      // hairline / stitch dividers
         mist: "#AEB4C2"       // muted text on dark bg
@@ -44,12 +45,17 @@ const config: Config = {
         reveal: {
           "0%": { opacity: "0", transform: "translateY(14px)" },
           "100%": { opacity: "1", transform: "translateY(0)" }
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" }
         }
       },
       animation: {
         marquee: "marquee 38s linear infinite",
         marqueeRtl: "marqueeRtl 38s linear infinite",
-        reveal: "reveal 0.7s cubic-bezier(0.16,1,0.3,1) forwards"
+        reveal: "reveal 0.7s cubic-bezier(0.16,1,0.3,1) forwards",
+        float: "float 6s ease-in-out infinite"
       }
     }
   },
