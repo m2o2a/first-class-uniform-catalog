@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import SectionHeading from "@/components/SectionHeading";
 import { phones, landline, telLink, whatsappLink } from "@/lib/contact";
@@ -31,21 +32,29 @@ export default function ContactPage() {
         <SectionHeading eyebrow={t.contact.eyebrow} title={t.contact.title} sub={t.contact.sub} />
 
         <div className="grid sm:grid-cols-3 gap-4 mb-12">
-          <a
+          <motion.a
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
             href={whatsappLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-2xl bg-[#25D366] text-white p-6 flex flex-col items-center gap-3 text-center hover:opacity-90 transition-opacity"
+            className="rounded-2xl bg-[#25D366] text-white p-6 flex flex-col items-center gap-3 text-center hover:opacity-90 hover:-translate-y-1 hover:shadow-xl transition-all"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
               <path d="M12 2C6.48 2 2 6.48 2 12c0 1.86.5 3.6 1.36 5.1L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.1c-1.6 0-3.1-.43-4.4-1.2l-.31-.18-3 .79.8-2.93-.2-.3A8.1 8.1 0 1 1 20.1 12c0 4.47-3.63 8.1-8.1 8.1z" />
             </svg>
             <span className="font-semibold text-sm">{t.contact.whatsapp}</span>
-          </a>
+          </motion.a>
 
-          <a
+          <motion.a
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.08 }}
             href={telLink(phones[0])}
-            className="rounded-2xl bg-ink text-white p-6 flex flex-col items-center gap-3 text-center hover:bg-royal transition-colors"
+            className="rounded-2xl bg-ink text-white p-6 flex flex-col items-center gap-3 text-center hover:bg-royal hover:-translate-y-1 hover:shadow-xl transition-all"
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <path
@@ -57,11 +66,15 @@ export default function ContactPage() {
               />
             </svg>
             <span className="font-semibold text-sm">{t.contact.call}</span>
-          </a>
+          </motion.a>
 
-          <button
+          <motion.button
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.16 }}
             onClick={shareCatalog}
-            className="rounded-2xl border border-line text-ink p-6 flex flex-col items-center gap-3 text-center hover:border-royal transition-colors"
+            className="rounded-2xl border border-line text-ink p-6 flex flex-col items-center gap-3 text-center hover:border-royal hover:-translate-y-1 hover:shadow-xl transition-all"
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <path
@@ -73,10 +86,16 @@ export default function ContactPage() {
               />
             </svg>
             <span className="font-semibold text-sm">{t.contact.share}</span>
-          </button>
+          </motion.button>
         </div>
 
-        <div className="rounded-2xl bg-paper border border-line p-6 sm:p-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="rounded-2xl bg-paper border border-line p-6 sm:p-8"
+        >
           <h3 className="text-xs tracking-widest2 text-signal font-bold mb-4">
             {t.contact.phones.toUpperCase()}
           </h3>
@@ -93,7 +112,7 @@ export default function ContactPage() {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
