@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { Category } from "@/lib/categories";
 
@@ -16,6 +17,12 @@ export default function CategoryCard({ category, index }: { category: Category; 
   const gradient = gradients[index % gradients.length];
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, delay: (index % 8) * 0.05, ease: "easeOut" }}
+    >
     <Link
       href={`/sections/${category.slug}`}
       className="group relative block overflow-hidden rounded-2xl aspect-[4/5] bg-ink"
@@ -47,5 +54,6 @@ export default function CategoryCard({ category, index }: { category: Category; 
         </svg>
       </div>
     </Link>
+    </motion.div>
   );
 }

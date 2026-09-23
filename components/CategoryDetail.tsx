@@ -1,29 +1,41 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { whatsappLink, telLink, phones } from "@/lib/contact";
 import { Category } from "@/lib/categories";
 import WatermarkImage from "@/components/WatermarkImage";
 
-export default function CategoryDetail({ category }: { category: Category }) {
+export default function CategoryDetail({
+  category,
+  photoCount = 8
+}: {
+  category: Category;
+  photoCount?: number;
+}) {
   const { t, lang } = useLang();
   const name = lang === "ar" ? category.ar : category.en;
   const desc = lang === "ar" ? category.descAr : category.descEn;
 
-  const placeholders = Array.from({ length: 8 });
+  const placeholders = Array.from({ length: photoCount });
 
   return (
     <>
       {/* Banner */}
       <section className="relative h-[46vh] min-h-[320px] flex items-end bg-ink fabric-texture overflow-hidden">
         <div className="pointer-events-none absolute -top-32 start-1/3 w-[50vw] h-[50vw] rounded-full bg-royal/25 blur-[120px]" />
-        <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pb-10 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pb-10 w-full"
+        >
           <p className="text-signal text-xs tracking-widest2 font-bold mb-2">
             FIRST CLASS FOR UNIFORM
           </p>
           <h1 className="font-display font-bold text-white text-3xl sm:text-5xl">{name}</h1>
           <p className="text-mist mt-2 max-w-lg">{desc}</p>
-        </div>
+        </motion.div>
       </section>
 
       {/* Gallery */}
