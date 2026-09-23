@@ -1,0 +1,28 @@
+{
+  "_ملاحظة": "غيّر الأرقام هنا بأسعارك الحقيقية. الأسعار كلها بالجنيه المصري لقطعة واحدة، قبل ضرب العدد.",
+  "fabrics": [
+    { "id": "cotton", "name_ar": "قطن", "name_en": "Cotton", "base_price": 180, "notes_ar": "مريح وتنفس عالي، مناسب للصيف" },
+    { "id": "twill", "name_ar": "توين", "name_en": "Twill", "base_price": 220, "notes_ar": "متين وقوي، الأكثر استخدامًا في الأمن والمصانع" },
+    { "id": "gabardine", "name_ar": "جبردين", "name_en": "Gabardine", "base_price": 210, "notes_ar": "مظهر رسمي، مناسب للفنادق والشركات" },
+    { "id": "polyester_mix", "name_ar": "قطن مخلوط", "name_en": "Poly-cotton mix", "base_price": 160, "notes_ar": "أرخص خيار، مناسب للأعداد الكبيرة" }
+  ],
+  "logo_price_per_logo": 25,
+  "logo_placement_extra": {
+    "chest": 0,
+    "back": 15,
+    "sleeve": 10
+  },
+  "quantity_tiers": [
+    { "min_qty": 1, "discount_percent": 0 },
+    { "min_qty": 50, "discount_percent": 5 },
+    { "min_qty": 100, "discount_percent": 10 },
+    { "min_qty": 300, "discount_percent": 15 },
+    { "min_qty": 1000, "discount_percent": 20 }
+  ],
+  "recommendation_rules_ar": [
+    "لو العدد كبير (300+) رشّح الخامة الأرخص (قطن مخلوط) لتقليل التكلفة الإجمالية",
+    "لو القطاع أمن أو مصانع رشّح توين لمتانته",
+    "لو القطاع فنادق أو شركات رشّح جبردين للمظهر الرسمي",
+    "لو الجو حار (صيف) أو مطاعم/مطابخ رشّح قطن للتهوية"
+  ]
+}

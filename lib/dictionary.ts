@@ -7,6 +7,8 @@ export const dictionary = {
     nav: {
       home: "الرئيسية",
       sections: "الأقسام",
+      allProducts: "كل المنتجات",
+      quote: "احسب السعر",
       projects: "سابقة الأعمال",
       clients: "عملاؤنا",
       contact: "تواصل معنا"
@@ -72,6 +74,8 @@ export const dictionary = {
     nav: {
       home: "Home",
       sections: "Sections",
+      allProducts: "All Products",
+      quote: "Get a Quote",
       projects: "Our Work",
       clients: "Clients",
       contact: "Contact"
