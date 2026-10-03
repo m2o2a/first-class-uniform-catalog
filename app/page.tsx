@@ -7,7 +7,39 @@ import Hero from "@/components/Hero";
 import SectionHeading from "@/components/SectionHeading";
 import CategoryCard from "@/components/CategoryCard";
 import SectorGrid from "@/components/SectorGrid";
-import { categories } from "@/lib/categories";
+import { categories, productTypes } from "@/lib/categories";
+import SayingsStrip from "@/components/SayingsStrip";
+
+function ActionCards() {
+  const { lang } = useLang();
+  const ar = lang === "ar";
+  const cards = [
+    { href: "/all-products", icon: "🛒", t: ar ? "اطلب دلوقتي" : "Order now", d: ar ? "جاهز: دفع كامل — بتطريز: عربون 50%" : "Ready: full pay — Embroidered: 50% deposit" },
+    { href: "/all-products", icon: "📦", t: ar ? "اطلب عينة" : "Request a sample", d: ar ? "شوف الخامة بإيدك قبل الكمية" : "Feel the fabric before bulk" },
+    { href: "/quote", icon: "🧮", t: ar ? "احسب السعر" : "Get a price", d: ar ? "سعر تقريبي فوري حسب الخامة والعدد" : "Instant estimate by fabric & qty" },
+    { href: "/account", icon: "👤", t: ar ? "اعمل حساب" : "Create account", d: ar ? "تابع طلباتك وكررها بسهولة" : "Track and reorder easily" }
+  ];
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {cards.map((c, i) => (
+        <motion.div
+          key={c.t}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.08 }}
+          whileHover={{ y: -6 }}
+        >
+          <Link href={c.href} className="block h-full rounded-2xl border border-line bg-white p-5 hover:border-royal hover:shadow-xl transition-all">
+            <span className="text-2xl">{c.icon}</span>
+            <p className="font-display font-bold text-ink mt-3">{c.t}</p>
+            <p className="text-steel text-xs sm:text-sm mt-1">{c.d}</p>
+          </Link>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 function StatsStrip() {
   const { lang } = useLang();
@@ -52,7 +84,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 sm:py-28 bg-white">
+      <section className="pt-16 pb-4 bg-white">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <ActionCards />
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <SectionHeading
             eyebrow={t.sectionsPage.eyebrow}
@@ -69,12 +107,29 @@ export default function Home() {
               href="/sections"
               className="inline-flex items-center gap-2 rounded-full border border-ink text-ink text-sm font-semibold px-6 py-3 hover:bg-ink hover:text-white transition-all hover:gap-3"
             >
-              {lang === "ar" ? "شوف كل الأقسام (22)" : "See all 22 sections"}
+              {lang === "ar" ? `شوف كل الأقسام (${categories.length})` : `See all ${categories.length} sections`}
               <span aria-hidden>{lang === "ar" ? "←" : "→"}</span>
             </Link>
           </div>
         </div>
       </section>
+
+      <section className="py-16 sm:py-20 bg-paper border-y border-line">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <SectionHeading
+            eyebrow={lang === "ar" ? "تسوّق حسب الصنف" : "Shop by product"}
+            title={lang === "ar" ? "الأصناف" : "Products"}
+            sub={lang === "ar" ? "بنطلون، تيشيرت، قميص، جاكت، مريلة وايبرون — كله بتطريز لوجو شركتك" : "Trousers, tees, shirts, jackets and aprons — all with your logo"}
+          />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {productTypes.map((c, i) => (
+              <CategoryCard key={c.slug} category={c} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SayingsStrip />
 
       {/* Customizer teaser — highlights the new interactive feature */}
       <section className="py-16 sm:py-20 bg-paper border-y border-line">

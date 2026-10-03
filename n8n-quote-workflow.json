@@ -12,17 +12,23 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [280, 300]
+      "position": [
+        280,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// ====== غيّر أرقامك هنا ======\nconst fabrics = {\n  cotton:         { name_ar: \"قطن\",          name_en: \"Cotton\",         base_price: 180 },\n  twill:          { name_ar: \"توين\",          name_en: \"Twill\",          base_price: 220 },\n  gabardine:      { name_ar: \"جبردين\",        name_en: \"Gabardine\",      base_price: 210 },\n  polyester_mix:  { name_ar: \"قطن مخلوط\",     name_en: \"Poly-cotton mix\", base_price: 160 }\n};\n\nconst logoPricePerLogo = 25;\nconst logoPlacementExtra = { chest: 0, back: 15, sleeve: 10 };\n\n// كل صف هنا: أقل عدد قطع تبدأ منه الخصم، ونسبة الخصم\nconst quantityTiers = [\n  { min_qty: 1,    discount_percent: 0 },\n  { min_qty: 50,   discount_percent: 5 },\n  { min_qty: 100,  discount_percent: 10 },\n  { min_qty: 300,  discount_percent: 15 },\n  { min_qty: 1000, discount_percent: 20 }\n];\n// ====== لغاية هنا بس اللي تغيره عادة ======\n\nconst body = $input.first().json.body || $input.first().json;\nconst quantity = Number(body.quantity) || 1;\nconst fabricId = body.fabricId || 'cotton';\nconst logoCount = Number(body.logoCount) || 0;\nconst logoPlacement = body.logoPlacement || 'chest';\nconst lang = body.lang || 'ar';\n\nconst fabric = fabrics[fabricId] || fabrics.cotton;\nconst extra = logoPlacementExtra[logoPlacement] ?? 0;\nconst perPieceBeforeDiscount = fabric.base_price + logoCount * (logoPricePerLogo + extra);\n\nconst tier = quantityTiers\n  .slice()\n  .sort((a, b) => a.min_qty - b.min_qty)\n  .filter(t => quantity >= t.min_qty)\n  .pop() || quantityTiers[0];\n\nconst perPiece = Math.round(perPieceBeforeDiscount * (1 - tier.discount_percent / 100));\nconst total = perPiece * quantity;\n\n// توصية بسيطة — غيّر أو زوّد الشروط زي ما يناسبك\nlet recommendation_ar = '';\nif (quantity >= 300 && fabricId !== 'polyester_mix') {\n  recommendation_ar = 'بما إن العدد كبير، خامة القطن المخلوط ممكن توفرلك في التكلفة الإجمالية من غير ما تأثر كتير على الجودة.';\n} else if (fabricId === 'twill') {\n  recommendation_ar = 'توين اختيار قوي ومتين، مناسب جدًا للاستخدام اليومي المكثف.';\n} else if (fabricId === 'gabardine') {\n  recommendation_ar = 'جبردين بيدي مظهر رسمي أنيق، مناسب لقطاعات زي الفنادق والشركات.';\n} else if (fabricId === 'cotton') {\n  recommendation_ar = 'القطن مريح وتنفسه عالي، اختيار موفق للأجواء الحارة والمطاعم.';\n}\n\nreturn [{\n  json: {\n    fabric_name_ar: fabric.name_ar,\n    fabric_name_en: fabric.name_en,\n    per_piece_price: perPiece,\n    quantity,\n    total_price: total,\n    discount_percent: tier.discount_percent,\n    currency: 'EGP',\n    recommendation_ar\n  }\n}];\n"
+        "jsCode": "// ====== غيّر أرقامك هنا ======\nconst fabrics = {\n  cotton:         { name_ar: \"قطن\",          name_en: \"Cotton\",         raw_material_price: 110, unit_price: 70 },\n  twill:          { name_ar: \"توين\",          name_en: \"Twill\",          raw_material_price: 140, unit_price: 80 },\n  gabardine:      { name_ar: \"جبردين\",        name_en: \"Gabardine\",      raw_material_price: 130, unit_price: 80 },\n  polyester_mix:  { name_ar: \"قطن مخلوط\",     name_en: \"Poly-cotton mix\", raw_material_price: 95,  unit_price: 65 }\n};\n\n// كل موديل (قسم) بسعره الخاص - اكتب سعر كل موديل عندك هنا\nconst models = {\n  security: { name_ar: \"يونيفورم الأمن\", price: 0 },\n  medical: { name_ar: \"يونيفورم طبي\", price: 0 },\n  doctors: { name_ar: \"يونيفورم أطباء\", price: 0 },\n  nursing: { name_ar: \"يونيفورم تمريض\", price: 0 },\n  restaurant: { name_ar: \"يونيفورم مطاعم\", price: 0 },\n  cafe: { name_ar: \"يونيفورم كافيهات\", price: 0 },\n  hotel: { name_ar: \"يونيفورم فنادق\", price: 0 },\n  corporate: { name_ar: \"يونيفورم شركات\", price: 0 },\n  factory: { name_ar: \"يونيفورم مصانع\", price: 0 },\n  construction: { name_ar: \"يونيفورم مقاولات\", price: 0 },\n  petroleum: { name_ar: \"يونيفورم بترول\", price: 0 },\n  cleaning: { name_ar: \"يونيفورم نظافة\", price: 0 },\n  school: { name_ar: \"يونيفورم مدارس\", price: 0 },\n  chef: { name_ar: \"ملابس شيف\", price: 0 },\n  \"hi-vis\": { name_ar: \"سترات عالية الوضوح\", price: 0 },\n  safety: { name_ar: \"ملابس السلامة\", price: 0 },\n  coveralls: { name_ar: \"أفرول\", price: 0 },\n  polo: { name_ar: \"بولو شيرت\", price: 0 },\n  tshirts: { name_ar: \"تي شيرت\", price: 0 },\n  jackets: { name_ar: \"جاكيتات\", price: 0 },\n  custom: { name_ar: \"يونيفورم حسب الطلب\", price: 0 },\n  accessories: { name_ar: \"إكسسوارات\", price: 0 }\n};\n\n// كل شكل/قصة بسعره الخاص - غيّر الأسماء والأسعار براحتك\nconst shapes = {\n  classic: { name_ar: \"قصة كلاسيك\", price: 0 },\n  sport: { name_ar: \"قصة سبور\", price: 0 },\n  slim: { name_ar: \"قصة ضيقة\", price: 0 },\n  custom_shape: { name_ar: \"شكل حسب الطلب\", price: 0 }\n};\n\nconst embroideryPrice = 25;\n\n// كل صف هنا: أقل عدد قطع تبدأ منه الخصم، ونسبة الخصم\nconst quantityTiers = [\n  { min_qty: 1,    discount_percent: 0 },\n  { min_qty: 50,   discount_percent: 5 },\n  { min_qty: 100,  discount_percent: 10 },\n  { min_qty: 300,  discount_percent: 15 },\n  { min_qty: 1000, discount_percent: 20 }\n];\n// ====== لغاية هنا بس اللي تغيره عادة ======\n\nconst body = $input.first().json.body || $input.first().json;\nconst quantity = Number(body.quantity) || 1;\nconst fabricId = body.fabricId || 'cotton';\nconst modelId = body.modelId || 'security';\nconst shapeId = body.shapeId || 'classic';\nconst embroideries = Array.isArray(body.embroideries) ? body.embroideries : [];\nconst totalLogos = embroideries.reduce((sum, e) => sum + (Number(e.count) || 0), 0);\n\nconst fabric = fabrics[fabricId] || fabrics.cotton;\nconst model = models[modelId] || Object.values(models)[0];\nconst shape = shapes[shapeId] || Object.values(shapes)[0];\nconst embroideryExtra = totalLogos * embroideryPrice;\n\nconst perPieceBeforeDiscount =\n  fabric.raw_material_price + fabric.unit_price + model.price + shape.price + embroideryExtra;\n\nconst tier = quantityTiers\n  .slice()\n  .sort((a, b) => a.min_qty - b.min_qty)\n  .filter(t => quantity >= t.min_qty)\n  .pop() || quantityTiers[0];\n\nconst perPiece = Math.round(perPieceBeforeDiscount * (1 - tier.discount_percent / 100));\nconst total = perPiece * quantity;\n\n// توصية بسيطة — غيّر أو زوّد الشروط زي ما يناسبك\nlet recommendation_ar = '';\nif (quantity >= 300 && fabricId !== 'polyester_mix') {\n  recommendation_ar = 'بما إن العدد كبير، خامة القطن المخلوط ممكن توفرلك في التكلفة الإجمالية من غير ما تأثر كتير على الجودة.';\n} else if (fabricId === 'twill') {\n  recommendation_ar = 'توين اختيار قوي ومتين، مناسب جدًا للاستخدام اليومي المكثف.';\n} else if (fabricId === 'gabardine') {\n  recommendation_ar = 'جبردين بيدي مظهر رسمي أنيق، مناسب لقطاعات زي الفنادق والشركات.';\n} else if (fabricId === 'cotton') {\n  recommendation_ar = 'القطن مريح وتنفسه عالي، اختيار موفق للأجواء الحارة والمطاعم.';\n}\n\nreturn [{\n  json: {\n    fabric_name_ar: fabric.name_ar,\n    fabric_name_en: fabric.name_en,\n    model_name_ar: model.name_ar,\n    shape_name_ar: shape.name_ar,\n    per_piece_price: perPiece,\n    quantity,\n    total_logos: totalLogos,\n    total_price: total,\n    discount_percent: tier.discount_percent,\n    currency: 'EGP',\n    recommendation_ar\n  }\n}];\n"
       },
       "id": "function1",
       "name": "احسب السعر",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [520, 300]
+      "position": [
+        520,
+        300
+      ]
     },
     {
       "parameters": {
@@ -34,15 +40,34 @@
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [760, 300]
+      "position": [
+        760,
+        300
+      ]
     }
   ],
   "connections": {
     "Webhook": {
-      "main": [[{ "node": "احسب السعر", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "احسب السعر",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "احسب السعر": {
-      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   }
 }

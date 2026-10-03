@@ -52,7 +52,7 @@ export default function AllProductsGrid({
                     <WatermarkImage
                       key={src}
                       src={src}
-                      alt={`${name} ${i + 1}`}
+                      alt={`${name} - فرست كلاس لليونيفورم - موديل ${i + 1}`}
                       fallbackLabel={name}
                     />
                   ))}

@@ -1,17 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { whatsappLink, telLink, phones } from "@/lib/contact";
-import { Category } from "@/lib/categories";
+import { Category, categories } from "@/lib/categories";
+import type { CategoryDetail as Detail } from "@/lib/category-details";
 import WatermarkImage from "@/components/WatermarkImage";
 
 export default function CategoryDetail({
   category,
-  photoCount = 8
+  photoCount = 8,
+  detail
 }: {
   category: Category;
   photoCount?: number;
+  detail?: Detail;
 }) {
   const { t, lang } = useLang();
   const name = lang === "ar" ? category.ar : category.en;
@@ -35,8 +39,57 @@ export default function CategoryDetail({
           </p>
           <h1 className="font-display font-bold text-white text-3xl sm:text-5xl">{name}</h1>
           <p className="text-mist mt-2 max-w-lg">{desc}</p>
+          <Link
+            href={`/quote?model=${category.slug}`}
+            className="inline-flex items-center gap-2 mt-5 rounded-full bg-gold text-ink text-sm font-bold px-6 py-3 hover:opacity-90"
+          >
+            {lang === "ar" ? "احسب سعر " + name : "Get a quote for " + name}
+          </Link>
         </motion.div>
       </section>
+
+      {detail && (
+        <section className="py-12 sm:py-16 bg-paper border-b border-line">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <p className="text-ink leading-8 text-base sm:text-lg">{detail.about}</p>
+              <h2 className="font-display font-bold text-ink text-lg mt-8 mb-4">
+                {lang === "ar" ? `إيه اللي بيميّز ${name} عندنا؟` : `What makes our ${name} different?`}
+              </h2>
+              <ul className="grid sm:grid-cols-2 gap-3">
+                {detail.features.map((f) => (
+                  <li key={f} className="flex gap-3 rounded-xl bg-white border border-line p-4 text-sm text-ink">
+                    <span className="text-gold">✦</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <aside className="space-y-4">
+              <div className="rounded-2xl bg-ink text-white p-5">
+                <p className="text-gold text-xs font-bold mb-2">{lang === "ar" ? "الخامة اللي بننصح بيها" : "Recommended fabric"}</p>
+                <p className="text-sm leading-7">{detail.fabric}</p>
+              </div>
+              {detail.items.length > 0 && (
+                <div className="rounded-2xl bg-white border border-line p-5">
+                  <p className="text-steel text-xs font-bold mb-3">{lang === "ar" ? "أصناف مناسبة" : "Suitable products"}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {detail.items.map((s) => {
+                      const c = categories.find((x) => x.slug === s);
+                      return c ? (
+                        <Link key={s} href={`/sections/${s}`} className="rounded-full border border-royal text-royal text-xs font-semibold px-3 py-1.5 hover:bg-royal hover:text-white">
+                          {lang === "ar" ? c.ar : c.en}
+                        </Link>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              )}
+              <ShareLink slug={category.slug} name={name} ar={lang === "ar"} />
+            </aside>
+          </div>
+        </section>
+      )}
 
       {/* Gallery */}
       <section className="py-14 sm:py-20 bg-white">
@@ -49,7 +102,7 @@ export default function CategoryDetail({
               <WatermarkImage
                 key={i}
                 src={`/products/${category.slug}/${i + 1}.jpg`}
-                alt={`${name} ${i + 1}`}
+                alt={`${name} - تصنيع فرست كلاس لليونيفورم بتطريز اللوجو - موديل ${i + 1}`}
                 fallbackLabel={name}
               />
             ))}
@@ -99,5 +152,33 @@ export default function CategoryDetail({
         </div>
       </section>
     </>
+  );
+}
+
+function ShareLink({ slug, name, ar }: { slug: string; name: string; ar: boolean }) {
+  const url = `https://first-class-uniform-catalog.vercel.app/sections/${slug}`;
+  const copy = () => {
+    try {
+      navigator.clipboard.writeText(url);
+      alert(ar ? "اتنسخ اللينك ✓" : "Link copied ✓");
+    } catch {}
+  };
+  return (
+    <div className="rounded-2xl bg-white border border-line p-5">
+      <p className="text-steel text-xs font-bold mb-3">{ar ? "لينك الصفحة دي" : "Link to this page"}</p>
+      <div className="flex gap-2">
+        <button onClick={copy} className="flex-1 rounded-full border border-ink text-ink text-xs font-bold py-2.5 hover:bg-ink hover:text-white">
+          {ar ? "انسخ اللينك" : "Copy link"}
+        </button>
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(name + " — " + url)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 text-center rounded-full bg-[#25D366] text-white text-xs font-bold py-2.5"
+        >
+          {ar ? "ابعته واتساب" : "Share"}
+        </a>
+      </div>
+    </div>
   );
 }

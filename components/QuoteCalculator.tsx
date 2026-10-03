@@ -5,13 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { whatsappLink } from "@/lib/contact";
 
-type Fabric = { id: string; name_ar: string; name_en: string; base_price: number; notes_ar?: string };
+type Fabric = { id: string; name_ar: string; name_en: string; raw_material_price: number; unit_price: number; notes_ar?: string };
+type PricedOption = { id: string; name_ar: string; price: number };
+
+type EmbroideryRow = { id: number; placement: string; count: number };
 
 type QuoteResult = {
   fabric_name_ar: string;
   fabric_name_en?: string;
+  model_name_ar?: string;
+  shape_name_ar?: string;
   per_piece_price: number;
   quantity: number;
+  total_logos: number;
   total_price: number;
   discount_percent: number;
   currency: string;
@@ -19,13 +25,21 @@ type QuoteResult = {
   source?: string;
 };
 
+let rowIdSeq = 1;
+
 export default function QuoteCalculator({ productName }: { productName?: string }) {
   const { lang } = useLang();
   const [fabrics, setFabrics] = useState<Fabric[]>([]);
+  const [models, setModels] = useState<PricedOption[]>([]);
+  const [shapes, setShapes] = useState<PricedOption[]>([]);
+  const [placements, setPlacements] = useState<string[]>([]);
   const [fabricId, setFabricId] = useState("");
+  const [modelId, setModelId] = useState("");
+  const [shapeId, setShapeId] = useState("");
   const [quantity, setQuantity] = useState(50);
-  const [logoCount, setLogoCount] = useState(1);
-  const [logoPlacement, setLogoPlacement] = useState<"chest" | "back" | "sleeve">("chest");
+  const [embroideries, setEmbroideries] = useState<EmbroideryRow[]>([
+    { id: rowIdSeq++, placement: "", count: 1 }
+  ]);
   const [result, setResult] = useState<QuoteResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,10 +50,36 @@ export default function QuoteCalculator({ productName }: { productName?: string 
       .then((d) => {
         setFabrics(d.fabrics || []);
         if (d.fabrics?.[0]) setFabricId(d.fabrics[0].id);
+        setModels(d.models || []);
+        const pre = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("model") : null;
+        const hit = pre && (d.models || []).find((m: PricedOption) => m.id === pre);
+        if (hit) setModelId(hit.id);
+        else if (d.models?.[0]) setModelId(d.models[0].id);
+        setShapes(d.shapes || []);
+        if (d.shapes?.[0]) setShapeId(d.shapes[0].id);
+        setPlacements(d.embroidery_placements_ar || []);
+        if (d.embroidery_placements_ar?.[0]) {
+          setEmbroideries([{ id: rowIdSeq++, placement: d.embroidery_placements_ar[0], count: 1 }]);
+        }
       })
       .catch(() => setError(lang === "ar" ? "تعذر تحميل الخامات" : "Could not load fabrics"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const addEmbroideryRow = () => {
+    setEmbroideries((rows) => [
+      ...rows,
+      { id: rowIdSeq++, placement: placements[0] || "", count: 1 }
+    ]);
+  };
+
+  const removeEmbroideryRow = (id: number) => {
+    setEmbroideries((rows) => (rows.length > 1 ? rows.filter((r) => r.id !== id) : rows));
+  };
+
+  const updateEmbroideryRow = (id: number, patch: Partial<EmbroideryRow>) => {
+    setEmbroideries((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
 
   const getQuote = async () => {
     setLoading(true);
@@ -49,7 +89,15 @@ export default function QuoteCalculator({ productName }: { productName?: string 
       const res = await fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity, fabricId, logoCount, logoPlacement, product: productName, lang })
+        body: JSON.stringify({
+          quantity,
+          fabricId,
+          modelId,
+          shapeId,
+          embroideries: embroideries.map((r) => ({ placement: r.placement, count: r.count })),
+          product: productName,
+          lang
+        })
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "failed");
@@ -68,12 +116,14 @@ export default function QuoteCalculator({ productName }: { productName?: string 
         ? "سعر تقريبي فوري — والفريق يتواصل معاك لتأكيد التفاصيل النهائية"
         : "Instant estimate — our team follows up to confirm final details",
     fabric: lang === "ar" ? "نوع الخامة" : "Fabric type",
+    model: lang === "ar" ? "الموديل" : "Model",
+    shape: lang === "ar" ? "الشكل" : "Shape",
     quantity: lang === "ar" ? "العدد" : "Quantity",
-    logoCount: lang === "ar" ? "عدد اللوجوهات" : "Number of logos",
-    logoPlacement: lang === "ar" ? "مكان اللوجو" : "Logo placement",
-    chest: lang === "ar" ? "الصدر" : "Chest",
-    back: lang === "ar" ? "الضهر" : "Back",
-    sleeve: lang === "ar" ? "الكم" : "Sleeve",
+    embroideries: lang === "ar" ? "التطريزات على القطعة" : "Embroidery on the piece",
+    placement: lang === "ar" ? "مكان التطريز" : "Placement",
+    count: lang === "ar" ? "العدد" : "Count",
+    addEmbroidery: lang === "ar" ? "+ أضف تطريزة تانية" : "+ Add another embroidery",
+    remove: lang === "ar" ? "حذف" : "Remove",
     calc: lang === "ar" ? "احسب السعر" : "Calculate price",
     calculating: lang === "ar" ? "جارٍ الحساب..." : "Calculating...",
     perPiece: lang === "ar" ? "سعر القطعة" : "Per piece",
@@ -89,6 +139,36 @@ export default function QuoteCalculator({ productName }: { productName?: string 
       <p className="text-steel text-sm mb-6">{t.sub}</p>
 
       <div className="grid sm:grid-cols-2 gap-4 mb-5">
+        <div>
+          <label className="text-xs font-semibold text-steel mb-1.5 block">{t.model}</label>
+          <select
+            value={modelId}
+            onChange={(e) => setModelId(e.target.value)}
+            className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink focus:border-royal focus:outline-none bg-white"
+          >
+            {models.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name_ar}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-steel mb-1.5 block">{t.shape}</label>
+          <select
+            value={shapeId}
+            onChange={(e) => setShapeId(e.target.value)}
+            className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink focus:border-royal focus:outline-none bg-white"
+          >
+            {shapes.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name_ar}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label className="text-xs font-semibold text-steel mb-1.5 block">{t.fabric}</label>
           <select
@@ -114,30 +194,53 @@ export default function QuoteCalculator({ productName }: { productName?: string 
             className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink focus:border-royal focus:outline-none"
           />
         </div>
+      </div>
 
-        <div>
-          <label className="text-xs font-semibold text-steel mb-1.5 block">{t.logoCount}</label>
-          <input
-            type="number"
-            min={0}
-            value={logoCount}
-            onChange={(e) => setLogoCount(Math.max(0, parseInt(e.target.value) || 0))}
-            className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink focus:border-royal focus:outline-none"
-          />
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-steel mb-2 block">{t.embroideries}</label>
+        <div className="space-y-2.5">
+          {embroideries.map((row) => (
+            <div key={row.id} className="flex items-center gap-2">
+              <select
+                value={row.placement}
+                onChange={(e) => updateEmbroideryRow(row.id, { placement: e.target.value })}
+                className="flex-1 rounded-xl border border-line px-3 py-2.5 text-sm text-ink focus:border-royal focus:outline-none bg-white"
+              >
+                {placements.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                min={1}
+                value={row.count}
+                onChange={(e) =>
+                  updateEmbroideryRow(row.id, { count: Math.max(1, parseInt(e.target.value) || 1) })
+                }
+                className="w-20 rounded-xl border border-line px-3 py-2.5 text-sm text-ink focus:border-royal focus:outline-none text-center"
+              />
+              {embroideries.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeEmbroideryRow(row.id)}
+                  aria-label={t.remove}
+                  className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full text-signal hover:bg-signal/10 transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
         </div>
-
-        <div>
-          <label className="text-xs font-semibold text-steel mb-1.5 block">{t.logoPlacement}</label>
-          <select
-            value={logoPlacement}
-            onChange={(e) => setLogoPlacement(e.target.value as "chest" | "back" | "sleeve")}
-            className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink focus:border-royal focus:outline-none bg-white"
-          >
-            <option value="chest">{t.chest}</option>
-            <option value="back">{t.back}</option>
-            <option value="sleeve">{t.sleeve}</option>
-          </select>
-        </div>
+        <button
+          type="button"
+          onClick={addEmbroideryRow}
+          className="mt-2.5 text-royal text-sm font-semibold hover:underline"
+        >
+          {t.addEmbroidery}
+        </button>
       </div>
 
       <button
@@ -186,8 +289,8 @@ export default function QuoteCalculator({ productName }: { productName?: string 
             <a
               href={whatsappLink(
                 lang === "ar"
-                  ? `مرحبًا، عايز أأكد طلب: ${productName || ""} — العدد ${quantity}، خامة ${result.fabric_name_ar}، ${logoCount} لوجو — السعر التقريبي ${result.total_price} جنيه`
-                  : `Hi, I'd like to confirm an order: ${productName || ""} — qty ${quantity}, fabric ${result.fabric_name_en || result.fabric_name_ar}, ${logoCount} logo(s) — estimated ${result.total_price} EGP`
+                  ? `مرحبًا، عايز أأكد طلب: ${productName || result.model_name_ar || ""} — شكل ${result.shape_name_ar}، العدد ${quantity}، خامة ${result.fabric_name_ar}، ${result.total_logos} تطريزة — السعر التقريبي ${result.total_price} جنيه`
+                  : `Hi, I'd like to confirm an order: ${productName || result.model_name_ar || ""} — qty ${quantity}, fabric ${result.fabric_name_en || result.fabric_name_ar}, ${result.total_logos} embroidery item(s) — estimated ${result.total_price} EGP`
               )}
               target="_blank"
               rel="noopener noreferrer"

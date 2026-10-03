@@ -1,0 +1,139 @@
+{
+  "name": "فرست كلاس - انشر على فيسبوك والموقع",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "بوست جديد - فرست كلاس",
+        "formDescription": "اكتب البوست وارفع الصور. هينزل على صفحة الفيس وعلى الموقع (صفحة أخبارنا) تلقائي.",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "النص", "fieldType": "textarea", "requiredField": true },
+            { "fieldLabel": "الصور", "fieldType": "file", "multipleFiles": true, "acceptFileTypes": ".jpg,.jpeg,.png" }
+          ]
+        },
+        "options": { "respondWithOptions": { "values": { "formSubmittedText": "تم النشر ✓ هيظهر على الموقع خلال 10 دقايق" } } }
+      },
+      "id": "form",
+      "name": "فورم البوست",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [0, 300],
+      "webhookId": "fc-facebook-post"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "a1", "name": "PAGE_ID", "value": "ضع_هنا_رقم_الصفحة", "type": "string" },
+            { "id": "a2", "name": "PAGE_TOKEN", "value": "ضع_هنا_توكن_الصفحة", "type": "string" }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "settings",
+      "name": "الإعدادات",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// نقسّم الصور لعناصر منفصلة عشان نرفع كل صورة لوحدها\nconst item = $input.first();\nconst bin = item.binary || {};\nconst keys = Object.keys(bin);\nif (!keys.length) {\n  return [{ json: { ...item.json, noPhotos: true } }];\n}\nreturn keys.map((k) => ({ json: { ...item.json, noPhotos: false }, binary: { photo: bin[k] } }));"
+      },
+      "id": "split",
+      "name": "تقسيم الصور",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.noPhotos }}", "rightValue": true, "operator": { "type": "boolean", "operation": "true", "singleValue": true } }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if",
+      "name": "فيه صور؟",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.PAGE_ID }}/photos",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            { "parameterType": "formBinaryData", "name": "source", "inputDataFieldName": "photo" },
+            { "name": "published", "value": "false" },
+            { "name": "access_token", "value": "={{ $json.PAGE_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "upload",
+      "name": "رفع الصور (مخفية)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $('الإعدادات').first().json;\nconst media = $input.all().map((i) => ({ media_fbid: i.json.id }));\nreturn [{ json: { PAGE_ID: s.PAGE_ID, PAGE_TOKEN: s.PAGE_TOKEN, message: s['النص'], attached_media: media } }];"
+      },
+      "id": "collect",
+      "name": "تجميع الصور",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $('الإعدادات').first().json;\nreturn [{ json: { PAGE_ID: s.PAGE_ID, PAGE_TOKEN: s.PAGE_TOKEN, message: s['النص'], attached_media: [] } }];"
+      },
+      "id": "textonly",
+      "name": "نص بس",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.PAGE_ID }}/feed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: $json.message, attached_media: $json.attached_media, access_token: $json.PAGE_TOKEN }) }}",
+        "options": {}
+      },
+      "id": "publish",
+      "name": "نشر البوست على الصفحة",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 300]
+    }
+  ],
+  "connections": {
+    "فورم البوست": { "main": [[{ "node": "الإعدادات", "type": "main", "index": 0 }]] },
+    "الإعدادات": { "main": [[{ "node": "تقسيم الصور", "type": "main", "index": 0 }]] },
+    "تقسيم الصور": { "main": [[{ "node": "فيه صور؟", "type": "main", "index": 0 }]] },
+    "فيه صور؟": {
+      "main": [
+        [{ "node": "نص بس", "type": "main", "index": 0 }],
+        [{ "node": "رفع الصور (مخفية)", "type": "main", "index": 0 }]
+      ]
+    },
+    "رفع الصور (مخفية)": { "main": [[{ "node": "تجميع الصور", "type": "main", "index": 0 }]] },
+    "تجميع الصور": { "main": [[{ "node": "نشر البوست على الصفحة", "type": "main", "index": 0 }]] },
+    "نص بس": { "main": [[{ "node": "نشر البوست على الصفحة", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

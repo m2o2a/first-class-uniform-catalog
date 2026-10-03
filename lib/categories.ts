@@ -4,6 +4,7 @@ export type Category = {
   en: string;
   descAr: string;
   descEn: string;
+  kind?: "product";
 };
 
 export const categories: Category[] = [
@@ -25,10 +26,18 @@ export const categories: Category[] = [
   { slug: "safety", ar: "ملابس السلامة", en: "Safety Wear", descAr: "معدات ومهمات الحماية", descEn: "Protective equipment & gear" },
   { slug: "coveralls", ar: "أفرول", en: "Coveralls", descAr: "أفرول العمل الشامل", descEn: "Full-body work coveralls" },
   { slug: "polo", ar: "بولو شيرت", en: "Polo Shirts", descAr: "بولو مطرز بالشعار", descEn: "Embroidered branded polos" },
-  { slug: "tshirts", ar: "تي شيرت", en: "T-Shirts", descAr: "تيشيرتات العمل اليومية", descEn: "Everyday work tees" },
-  { slug: "jackets", ar: "جاكيتات", en: "Jackets", descAr: "جاكيتات الشتاء والميدان", descEn: "Winter & field jackets" },
+  { slug: "tshirts", ar: "تي شيرت", en: "T-Shirts", descAr: "تيشيرتات العمل اليومية", descEn: "Everyday work tees", kind: "product" },
+  { slug: "jackets", ar: "جاكيتات", en: "Jackets", descAr: "جاكيتات الشتاء والميدان", descEn: "Winter & field jackets", kind: "product" },
+  { slug: "pants", ar: "بنطلونات", en: "Trousers", descAr: "بنطلونات عمل ورسمي وكارجو", descEn: "Work, formal & cargo trousers", kind: "product" },
+  { slug: "shirts", ar: "قمصان", en: "Shirts", descAr: "قمصان كم ونص كم", descEn: "Long & short sleeve shirts", kind: "product" },
+  { slug: "bib-apron", ar: "مرايل", en: "Bib Aprons", descAr: "مريلة صدر للمطبخ والصالة", descEn: "Full bib aprons", kind: "product" },
+  { slug: "waist-apron", ar: "ايبرون", en: "Waist Aprons", descAr: "ايبرون وسط للجرسون والباريستا", descEn: "Waist aprons for service staff", kind: "product" },
   { slug: "custom", ar: "يونيفورم حسب الطلب", en: "Custom Uniform", descAr: "تصميم خاص حسب احتياجك", descEn: "Designed to your brief" },
   { slug: "accessories", ar: "إكسسوارات", en: "Accessories", descAr: "شارات، أحزمة، وإضافات", descEn: "Badges, belts & add-ons" }
 ];
+
+export const productTypes = ["pants", "tshirts", "shirts", "jackets", "bib-apron", "waist-apron"]
+  .map((s) => categories.find((c) => c.slug === s)!)
+  .filter(Boolean);
 
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);

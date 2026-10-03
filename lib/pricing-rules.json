@@ -1,23 +1,225 @@
 {
-  "_ملاحظة": "غيّر الأرقام هنا بأسعارك الحقيقية. الأسعار كلها بالجنيه المصري لقطعة واحدة، قبل ضرب العدد.",
+  "_ملاحظة": "دي لسه أرقام مبدئية (placeholder) مش أسعارك الحقيقية. غيّرها هنا وقت ما تحب. سعر القطعة النهائي = سعر الموديل + سعر الشكل + (سعر الخامة: raw_material_price + unit_price) + (عدد التطريزات × embroidery_price).",
   "fabrics": [
-    { "id": "cotton", "name_ar": "قطن", "name_en": "Cotton", "base_price": 180, "notes_ar": "مريح وتنفس عالي، مناسب للصيف" },
-    { "id": "twill", "name_ar": "توين", "name_en": "Twill", "base_price": 220, "notes_ar": "متين وقوي، الأكثر استخدامًا في الأمن والمصانع" },
-    { "id": "gabardine", "name_ar": "جبردين", "name_en": "Gabardine", "base_price": 210, "notes_ar": "مظهر رسمي، مناسب للفنادق والشركات" },
-    { "id": "polyester_mix", "name_ar": "قطن مخلوط", "name_en": "Poly-cotton mix", "base_price": 160, "notes_ar": "أرخص خيار، مناسب للأعداد الكبيرة" }
+    {
+      "id": "cotton",
+      "name_ar": "قطن",
+      "name_en": "Cotton",
+      "raw_material_price": 110,
+      "unit_price": 70,
+      "notes_ar": "مريح وتنفس عالي، مناسب للصيف"
+    },
+    {
+      "id": "twill",
+      "name_ar": "توين",
+      "name_en": "Twill",
+      "raw_material_price": 140,
+      "unit_price": 80,
+      "notes_ar": "متين وقوي، الأكثر استخدامًا في الأمن والمصانع"
+    },
+    {
+      "id": "gabardine",
+      "name_ar": "جبردين",
+      "name_en": "Gabardine",
+      "raw_material_price": 130,
+      "unit_price": 80,
+      "notes_ar": "مظهر رسمي، مناسب للفنادق والشركات"
+    },
+    {
+      "id": "polyester_mix",
+      "name_ar": "قطن مخلوط",
+      "name_en": "Poly-cotton mix",
+      "raw_material_price": 95,
+      "unit_price": 65,
+      "notes_ar": "أرخص خيار، مناسب للأعداد الكبيرة"
+    }
   ],
-  "logo_price_per_logo": 25,
-  "logo_placement_extra": {
-    "chest": 0,
-    "back": 15,
-    "sleeve": 10
-  },
+  "models": [
+    {
+      "id": "security",
+      "name_ar": "يونيفورم الأمن",
+      "price": 0
+    },
+    {
+      "id": "medical",
+      "name_ar": "يونيفورم طبي",
+      "price": 0
+    },
+    {
+      "id": "doctors",
+      "name_ar": "يونيفورم أطباء",
+      "price": 0
+    },
+    {
+      "id": "nursing",
+      "name_ar": "يونيفورم تمريض",
+      "price": 0
+    },
+    {
+      "id": "restaurant",
+      "name_ar": "يونيفورم مطاعم",
+      "price": 0
+    },
+    {
+      "id": "cafe",
+      "name_ar": "يونيفورم كافيهات",
+      "price": 0
+    },
+    {
+      "id": "hotel",
+      "name_ar": "يونيفورم فنادق",
+      "price": 0
+    },
+    {
+      "id": "corporate",
+      "name_ar": "يونيفورم شركات",
+      "price": 0
+    },
+    {
+      "id": "factory",
+      "name_ar": "يونيفورم مصانع",
+      "price": 0
+    },
+    {
+      "id": "construction",
+      "name_ar": "يونيفورم مقاولات",
+      "price": 0
+    },
+    {
+      "id": "petroleum",
+      "name_ar": "يونيفورم بترول",
+      "price": 0
+    },
+    {
+      "id": "cleaning",
+      "name_ar": "يونيفورم نظافة",
+      "price": 0
+    },
+    {
+      "id": "school",
+      "name_ar": "يونيفورم مدارس",
+      "price": 0
+    },
+    {
+      "id": "chef",
+      "name_ar": "ملابس شيف",
+      "price": 0
+    },
+    {
+      "id": "hi-vis",
+      "name_ar": "سترات عالية الوضوح",
+      "price": 0
+    },
+    {
+      "id": "safety",
+      "name_ar": "ملابس السلامة",
+      "price": 0
+    },
+    {
+      "id": "coveralls",
+      "name_ar": "أفرول",
+      "price": 0
+    },
+    {
+      "id": "polo",
+      "name_ar": "بولو شيرت",
+      "price": 0
+    },
+    {
+      "id": "tshirts",
+      "name_ar": "تي شيرت",
+      "price": 0
+    },
+    {
+      "id": "jackets",
+      "name_ar": "جاكيتات",
+      "price": 0
+    },
+    {
+      "id": "custom",
+      "name_ar": "يونيفورم حسب الطلب",
+      "price": 0
+    },
+    {
+      "id": "accessories",
+      "name_ar": "إكسسوارات",
+      "price": 0
+    },
+    {
+      "id": "pants",
+      "name_ar": "بنطلونات",
+      "price": 0
+    },
+    {
+      "id": "shirts",
+      "name_ar": "قمصان",
+      "price": 0
+    },
+    {
+      "id": "bib-apron",
+      "name_ar": "مرايل",
+      "price": 0
+    },
+    {
+      "id": "waist-apron",
+      "name_ar": "ايبرون",
+      "price": 0
+    }
+  ],
+  "_ملاحظة_موديلات": "دي كل الأقسام اللي في الموقع، بسعر 0 مؤقتًا. اكتب سعر كل موديل عندك في price.",
+  "shapes": [
+    {
+      "id": "classic",
+      "name_ar": "قصة كلاسيك",
+      "price": 0
+    },
+    {
+      "id": "sport",
+      "name_ar": "قصة سبور",
+      "price": 0
+    },
+    {
+      "id": "slim",
+      "name_ar": "قصة ضيقة",
+      "price": 0
+    },
+    {
+      "id": "custom_shape",
+      "name_ar": "شكل حسب الطلب",
+      "price": 0
+    }
+  ],
+  "_ملاحظة_أشكال": "دي أشكال مبدئية (اسم وسعر). غيّر الأسماء والأسعار بما يناسب منتجاتك الفعلية.",
+  "embroidery_price": 25,
   "quantity_tiers": [
-    { "min_qty": 1, "discount_percent": 0 },
-    { "min_qty": 50, "discount_percent": 5 },
-    { "min_qty": 100, "discount_percent": 10 },
-    { "min_qty": 300, "discount_percent": 15 },
-    { "min_qty": 1000, "discount_percent": 20 }
+    {
+      "min_qty": 1,
+      "discount_percent": 0
+    },
+    {
+      "min_qty": 50,
+      "discount_percent": 5
+    },
+    {
+      "min_qty": 100,
+      "discount_percent": 10
+    },
+    {
+      "min_qty": 300,
+      "discount_percent": 15
+    },
+    {
+      "min_qty": 1000,
+      "discount_percent": 20
+    }
+  ],
+  "embroidery_placements_ar": [
+    "الصدر",
+    "الضهر",
+    "الكم الشمال",
+    "الكم اليمين",
+    "الياقة",
+    "مكان تاني"
   ],
   "recommendation_rules_ar": [
     "لو العدد كبير (300+) رشّح الخامة الأرخص (قطن مخلوط) لتقليل التكلفة الإجمالية",

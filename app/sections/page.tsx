@@ -39,11 +39,26 @@ export default function SectionsPage() {
               {lang === "ar" ? "مفيش قسم مطابق للبحث." : "No matching sections."}
             </p>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-              {filtered.map((c, i) => (
-                <CategoryCard key={c.slug} category={c} index={i} />
-              ))}
-            </div>
+            <>
+              {[
+                { title: lang === "ar" ? "المجالات" : "Sectors", sub: lang === "ar" ? "اختار مجال شغلك" : "Pick your industry", list: filtered.filter((c) => c.kind !== "product") },
+                { title: lang === "ar" ? "الأصناف" : "Products", sub: lang === "ar" ? "اختار نوع القطعة" : "Pick a garment type", list: filtered.filter((c) => c.kind === "product") }
+              ]
+                .filter((g) => g.list.length)
+                .map((g) => (
+                  <div key={g.title} className="mb-14">
+                    <div className="flex items-end justify-between mb-5 border-b border-line pb-3">
+                      <h2 className="font-display font-bold text-2xl text-ink">{g.title}</h2>
+                      <p className="text-steel text-sm">{g.sub} · {g.list.length}</p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+                      {g.list.map((c, i) => (
+                        <CategoryCard key={c.slug} category={c} index={i} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </>
           )}
         </div>
       </section>

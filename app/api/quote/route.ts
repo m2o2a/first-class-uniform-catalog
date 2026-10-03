@@ -1,21 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import pricing from "@/lib/pricing-rules.json";
 
+type EmbroideryItem = {
+  placement: string;
+  count: number;
+};
+
 type QuoteInput = {
   quantity: number;
   fabricId: string;
-  logoCount: number;
-  logoPlacement: "chest" | "back" | "sleeve";
+  modelId: string;
+  shapeId: string;
+  embroideries: EmbroideryItem[];
   product?: string;
   lang?: "ar" | "en";
 };
 
 function localCompute(input: QuoteInput) {
   const fabric = pricing.fabrics.find((f) => f.id === input.fabricId) || pricing.fabrics[0];
-  const logoExtra =
-    (pricing.logo_placement_extra as Record<string, number>)[input.logoPlacement] ?? 0;
+  const model = pricing.models.find((m) => m.id === input.modelId) || pricing.models[0];
+  const shape = pricing.shapes.find((s) => s.id === input.shapeId) || pricing.shapes[0];
+  const embroideries = Array.isArray(input.embroideries) ? input.embroideries : [];
+  const totalLogos = embroideries.reduce((sum, e) => sum + (Number(e.count) || 0), 0);
+  const embroideryExtra = totalLogos * pricing.embroidery_price;
+
   const perPieceBeforeDiscount =
-    fabric.base_price + input.logoCount * (pricing.logo_price_per_logo + logoExtra);
+    fabric.raw_material_price + fabric.unit_price + model.price + shape.price + embroideryExtra;
 
   // pick the best matching quantity tier
   const tier = [...pricing.quantity_tiers]
@@ -43,8 +53,11 @@ function localCompute(input: QuoteInput) {
   return {
     fabric_name_ar: fabric.name_ar,
     fabric_name_en: fabric.name_en,
+    model_name_ar: model.name_ar,
+    shape_name_ar: shape.name_ar,
     per_piece_price: perPiece,
     quantity: input.quantity,
+    total_logos: totalLogos,
     total_price: total,
     discount_percent: tier.discount_percent,
     currency: "EGP",
@@ -57,7 +70,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as QuoteInput;
 
-    if (!body || !body.fabricId || !body.quantity || body.quantity < 1) {
+    if (!body || !body.fabricId || !body.modelId || !body.shapeId || !body.quantity || body.quantity < 1) {
       return NextResponse.json({ ok: false, error: "missing_fields" }, { status: 400 });
     }
 
@@ -91,9 +104,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  // Lets the front-end fetch the fabric list + labels without duplicating them.
+  // Lets the front-end fetch fabrics/models/shapes without duplicating them.
   return NextResponse.json({
     fabrics: pricing.fabrics,
-    logo_placement_extra: pricing.logo_placement_extra
+    models: pricing.models,
+    shapes: pricing.shapes,
+    embroidery_placements_ar: pricing.embroidery_placements_ar
   });
 }

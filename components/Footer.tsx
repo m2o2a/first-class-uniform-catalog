@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2 mb-3">
-            <Image src="/logo/logo.png" alt="First Class" width={34} height={34} />
+            <span className="w-9 h-9 rounded-full bg-white flex items-center justify-center"><Image src="/logo/logo-mark.png" alt="First Class" width={30} height={30} /></span>
             <span className="font-display font-bold">FIRST CLASS FOR UNIFORM</span>
           </div>
           <p className="text-mist text-sm max-w-sm">

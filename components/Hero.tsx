@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { whatsappLink, telLink, phones } from "@/lib/contact";
 
@@ -15,11 +16,58 @@ const fadeUp = {
   })
 };
 
+const stack = [
+  { src: "/products/hotel/7.jpg", cls: "top-0 end-[8%] w-[46%] rotate-[4deg] z-20", speed: -60 },
+  { src: "/products/chef/5.jpg", cls: "top-[18%] start-0 w-[42%] -rotate-[6deg] z-10", speed: -120 },
+  { src: "/products/jackets/5.jpg", cls: "bottom-0 end-[22%] w-[44%] rotate-[-2deg] z-30", speed: -30 }
+];
+
+function LayeredPhotos() {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y0 = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : stack[0].speed]);
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : stack[1].speed]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : stack[2].speed]);
+  const ys = [y0, y1, y2];
+
+  return (
+    <div ref={ref} className="relative w-full aspect-[5/4] max-w-[560px] mx-auto">
+      {stack.map((p, i) => (
+        <motion.div key={p.src} style={{ y: ys[i] }} className={`absolute ${p.cls}`}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.35 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.04, rotate: 0, zIndex: 40 }}
+          >
+            <motion.div
+              animate={reduce ? undefined : { y: [0, -8, 0] }}
+              transition={{ duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 }}
+              className="relative aspect-[4/5] rounded-2xl overflow-hidden border-4 border-white/90 shadow-2xl shadow-black/50 bg-paper"
+            >
+              <Image src={p.src} alt="" fill sizes="(max-width: 768px) 45vw, 260px" className="object-cover" priority={i === 0} />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      ))}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.1, type: "spring" }}
+        className="absolute -bottom-2 start-[6%] z-40 rounded-full bg-gold text-ink text-xs font-bold px-4 py-2 shadow-lg"
+      >
+        ✦ SINCE 2009
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Hero() {
   const { t } = useLang();
 
   return (
-    <section className="relative min-h-[92svh] flex items-center justify-center overflow-hidden bg-ink fabric-texture">
+    <section className="relative min-h-[92svh] flex items-center overflow-hidden bg-ink fabric-texture py-16 lg:py-0">
       {/* ambient glow — subtly animated */}
       <motion.div
         className="pointer-events-none absolute -top-40 start-1/2 -translate-x-1/2 w-[70vw] h-[70vw] rounded-full bg-royal/25 blur-[140px]"
@@ -45,7 +93,8 @@ export default function Hero() {
         ))}
       </div>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="text-center lg:text-start">
         <motion.p
           variants={fadeUp}
           initial="hidden"
@@ -57,14 +106,9 @@ export default function Hero() {
         </motion.p>
 
         <motion.div variants={fadeUp} initial="hidden" animate="show" custom={1}>
-          <Image
-            src="/logo/logo.png"
-            alt="First Class For Uniform"
-            width={120}
-            height={120}
-            className="mx-auto mb-8"
-            priority
-          />
+          <span className="inline-flex mx-auto lg:mx-0 mb-8 rounded-3xl bg-white p-3 shadow-2xl shadow-royal/30">
+            <Image src="/logo/logo.png" alt="First Class For Uniform" width={104} height={115} priority />
+          </span>
         </motion.div>
 
         <motion.h1
@@ -85,7 +129,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           custom={3}
-          className="stitch stitch-light w-24 mx-auto my-8"
+          className="stitch stitch-light w-24 mx-auto lg:mx-0 my-8"
         />
 
         <motion.p
@@ -103,7 +147,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           custom={5}
-          className="flex flex-wrap items-center justify-center gap-3"
+          className="flex flex-wrap items-center justify-center lg:justify-start gap-3"
         >
           <Link
             href="/sections"
@@ -126,6 +170,8 @@ export default function Hero() {
             {t.hero.call}
           </a>
         </motion.div>
+      </div>
+      <LayeredPhotos />
       </div>
 
       <motion.div

@@ -20,12 +20,15 @@ export default function ProductCustomizer({
   src,
   productName,
   open,
-  onClose
+  onClose,
+  template = false
 }: {
   src: string;
   productName: string;
   open: boolean;
   onClose: () => void;
+  /** رسمة خام بخلفية شفافة: اللون بيتحط على القطعة بس والخطوط تفضل باينة */
+  template?: boolean;
 }) {
   const { lang } = useLang();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,6 +80,29 @@ export default function ProductCustomizer({
 
     ctx.clearRect(0, 0, size, size);
 
+    if (template) {
+      // white backdrop, contain-fit, colour only the garment (alpha) and keep the lines (multiply)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, size, size);
+      const r = Math.min((size * 0.9) / baseImg.width, (size * 0.9) / baseImg.height);
+      const w = baseImg.width * r, h = baseImg.height * r;
+      const dx = (size - w) / 2, dy = (size - h) / 2;
+      const off = document.createElement("canvas");
+      off.width = size; off.height = size;
+      const o = off.getContext("2d");
+      if (o) {
+        o.drawImage(baseImg, dx, dy, w, h);
+        if (color) {
+          o.globalCompositeOperation = "multiply";
+          o.fillStyle = color;
+          o.fillRect(0, 0, size, size);
+          o.globalCompositeOperation = "destination-in";
+          o.drawImage(baseImg, dx, dy, w, h);
+          o.globalCompositeOperation = "source-over";
+        }
+        ctx.drawImage(off, 0, 0);
+      }
+    } else {
     // cover-fit draw of base image
     const ratio = Math.max(size / baseImg.width, size / baseImg.height);
     const w = baseImg.width * ratio;
@@ -97,6 +123,7 @@ export default function ProductCustomizer({
       ctx.fillRect(0, 0, size, size);
       ctx.globalCompositeOperation = "source-over";
     }
+    }
 
     // logo overlay
     if (logo) {
@@ -110,7 +137,7 @@ export default function ProductCustomizer({
       ctx.drawImage(logo, lx, ly, logoW, logoH);
       ctx.restore();
     }
-  }, [baseImg, color, logo, logoPos, logoScale]);
+  }, [baseImg, color, logo, logoPos, logoScale, template]);
 
   useEffect(() => {
     draw();
@@ -357,6 +384,18 @@ export default function ProductCustomizer({
                         aria-label={c.name_en}
                       />
                     ))}
+                    <label
+                      title={lang === "ar" ? "أي لون" : "Any colour"}
+                      className="w-9 h-9 rounded-full border-2 border-white shadow cursor-pointer overflow-hidden relative"
+                      style={{ background: "conic-gradient(red,yellow,lime,cyan,blue,magenta,red)" }}
+                    >
+                      <input
+                        type="color"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        value={color ?? "#16308c"}
+                        onChange={(e) => setColor(e.target.value)}
+                      />
+                    </label>
                   </div>
                 </div>
 
