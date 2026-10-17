@@ -14,7 +14,6 @@ const values = [
 
 const facts = [
   { n: "2009", ar: "سنة البداية", en: "Founded" },
-  { n: "+60", ar: "عميل وثق فينا", en: "Clients served" },
   { n: "7", ar: "قطاعات رئيسية", en: "Main sectors" },
   { n: "100%", ar: "تصنيع في مصنعنا", en: "Made in our factory" }
 ];
@@ -25,7 +24,7 @@ export default function ClientsSheets() {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {facts.map((f, i) => (
           <motion.div
             key={f.n}

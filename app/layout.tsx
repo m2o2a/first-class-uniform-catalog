@@ -25,12 +25,13 @@ export const metadata: Metadata = {
     "سكراب", "يونيفورم مطاعم", "يونيفورم فنادق", "افرول", "يونيفورم مصانع", "يونيفورم مدارس",
     "تطريز لوجو", "جاكت شيف", "يونيفورم القاهرة", "uniform factory Egypt"
   ],
-  alternates: { canonical: "/" },
+  // No canonical or og:url here: they would be inherited by every page that
+  // lacks its own and point it at the home page. Each page sets them via
+  // pageMetadata() in lib/seo.ts.
   openGraph: {
     type: "website",
     locale: "ar_EG",
     siteName: "فرست كلاس لليونيفورم",
-    url: SITE,
     images: ["/logo/logo.png"]
   },
   robots: { index: true, follow: true },

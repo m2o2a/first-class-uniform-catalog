@@ -25,14 +25,14 @@ npm start
 ```
 app/
   page.tsx                → الصفحة الرئيسية (Hero + أقسام مختارة + سابقة أعمال + CTA)
-  sections/page.tsx       → كل الـ 22 قسم
+  sections/page.tsx       → كل الأقسام (26 حاليًا)
   sections/[slug]/page.tsx→ صفحة كل قسم (Banner + Gallery + CTA)
   projects/page.tsx       → سابقة الأعمال حسب القطاع
   clients/page.tsx        → شعارات العملاء
   contact/page.tsx        → واتساب / اتصال / مشاركة الكتالوج
 components/               → أجزاء الواجهة القابلة لإعادة الاستخدام
 lib/
-  categories.ts           → قائمة الـ 22 قسم (عدّل هنا لو غيّرت الأقسام)
+  categories.ts           → قائمة الأقسام (عدّل هنا لو غيّرت الأقسام)
   sectors.ts              → قطاعات سابقة الأعمال
   dictionary.ts           → كل النصوص عربي/إنجليزي في مكان واحد
   contact.ts              → أرقام التليفون ورابط الواتساب

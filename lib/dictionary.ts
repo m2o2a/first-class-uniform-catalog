@@ -1,3 +1,5 @@
+import { categories } from "./categories";
+
 export type Lang = "ar" | "en";
 
 export const dictionary = {
@@ -23,7 +25,7 @@ export const dictionary = {
       call: "اتصل بنا"
     },
     sectionsPage: {
-      eyebrow: "22 قسمًا متخصصًا",
+      eyebrow: `${categories.length} قسمًا متخصصًا`,
       title: "اختر قطاعك",
       sub: "كل قطاع له تصميم وخامة تناسب طبيعة عمله"
     },
@@ -41,7 +43,7 @@ export const dictionary = {
       sub: "بنفخر بثقة عملائنا في قطاعات مختلفة على مدار سنوات"
     },
     clients: {
-      eyebrow: "أكثر من 60 عميل",
+      eyebrow: "عملاؤنا",
       title: "شركاء النجاح",
       sub: "من قطاع الأمن للمستشفيات للفنادق والمصانع — دي شركات وثقت فينا"
     },
@@ -90,7 +92,7 @@ export const dictionary = {
       call: "Call Now"
     },
     sectionsPage: {
-      eyebrow: "22 specialized sections",
+      eyebrow: `${categories.length} specialized sections`,
       title: "Choose your sector",
       sub: "Every sector gets a fit and fabric built for how the job moves"
     },
@@ -108,7 +110,7 @@ export const dictionary = {
       sub: "Trusted by teams across sectors, year after year"
     },
     clients: {
-      eyebrow: "60+ clients",
+      eyebrow: "Our clients",
       title: "Partners in the field",
       sub: "From security to hospitals, hotels to factories — these are the names that trust us"
     },

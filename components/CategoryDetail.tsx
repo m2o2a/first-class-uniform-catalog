@@ -7,6 +7,7 @@ import { whatsappLink, telLink, phones } from "@/lib/contact";
 import { Category, categories } from "@/lib/categories";
 import type { CategoryDetail as Detail } from "@/lib/category-details";
 import WatermarkImage from "@/components/WatermarkImage";
+import { SITE } from "@/lib/site";
 
 export default function CategoryDetail({
   category,
@@ -156,7 +157,7 @@ export default function CategoryDetail({
 }
 
 function ShareLink({ slug, name, ar }: { slug: string; name: string; ar: boolean }) {
-  const url = `https://first-class-uniform-catalog.vercel.app/sections/${slug}`;
+  const url = `${SITE}/sections/${slug}`;
   const copy = () => {
     try {
       navigator.clipboard.writeText(url);

@@ -5,22 +5,21 @@ import { categories, getCategory } from "@/lib/categories";
 import CategoryDetail from "@/components/CategoryDetail";
 import { getDetail } from "@/lib/category-details";
 import type { Metadata } from "next";
-
-import { SITE } from "@/lib/site";
+import { BRAND_AR, pageMetadata } from "@/lib/seo";
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const c = getCategory(params.slug);
   if (!c) return {};
   const d = getDetail(c.slug);
-  const title = `${c.ar} | فرست كلاس لليونيفورم`;
-  const description = d?.about || c.descAr;
-  const image = `${SITE}/products/${c.slug}/1.jpg`;
-  return {
-    title,
-    description,
-    alternates: { canonical: `${SITE}/sections/${c.slug}` },
-    openGraph: { title, description, url: `${SITE}/sections/${c.slug}`, images: [image], locale: "ar_EG", type: "website" }
-  };
+  // Absolute title: app/sections/layout.tsx sets its own title, which stops
+  // the root template from applying here, so the brand is added once, explicitly.
+  return pageMetadata({
+    title: `${c.ar} — ${c.descAr} | ${BRAND_AR}`,
+    absoluteTitle: true,
+    description: d?.about || c.descAr,
+    path: `/sections/${c.slug}`,
+    image: `/products/${c.slug}/1.jpg`
+  });
 }
 
 export function generateStaticParams() {
