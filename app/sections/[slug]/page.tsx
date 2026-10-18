@@ -3,6 +3,7 @@ import path from "path";
 import { notFound } from "next/navigation";
 import { categories, getCategory } from "@/lib/categories";
 import CategoryDetail from "@/components/CategoryDetail";
+import SectionProducts from "@/components/SectionProducts";
 import { getDetail } from "@/lib/category-details";
 import type { Metadata } from "next";
 import { BRAND_AR, pageMetadata } from "@/lib/seo";
@@ -42,5 +43,10 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
   const category = getCategory(params.slug);
   if (!category) notFound();
   const photoCount = countPhotos(category.slug);
-  return <CategoryDetail category={category} photoCount={photoCount} detail={getDetail(category.slug)} />;
+  return (
+    <>
+      <CategoryDetail category={category} photoCount={photoCount} detail={getDetail(category.slug)} />
+      <SectionProducts section={category.slug} />
+    </>
+  );
 }
