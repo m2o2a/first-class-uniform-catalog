@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import SectionHeading from "@/components/SectionHeading";
-import { phones, landline, telLink, whatsappLink } from "@/lib/contact";
+import { phones, landline, telLink, whatsappLink, mapsLink } from "@/lib/contact";
 
 export default function ContactPage() {
   const { t, lang } = useLang();
@@ -31,7 +31,7 @@ export default function ContactPage() {
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <SectionHeading eyebrow={t.contact.eyebrow} title={t.contact.title} sub={t.contact.sub} />
 
-        <div className="grid sm:grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           <motion.a
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -66,6 +66,23 @@ export default function ContactPage() {
               />
             </svg>
             <span className="font-semibold text-sm">{t.contact.call}</span>
+          </motion.a>
+
+          <motion.a
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.12 }}
+            href={mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-2xl bg-royal text-white p-6 flex flex-col items-center gap-3 text-center hover:opacity-90 hover:-translate-y-1 hover:shadow-xl transition-all"
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            <span className="font-semibold text-sm">{lang === "ar" ? "موقع المصنع على الخريطة" : "Factory location"}</span>
           </motion.a>
 
           <motion.button

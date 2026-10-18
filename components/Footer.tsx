@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLang } from "@/lib/lang-context";
-import { phones, landline, telLink, whatsappLink } from "@/lib/contact";
+import { phones, landline, telLink, whatsappLink, mapsLink } from "@/lib/contact";
 
 export default function Footer() {
   const { t, lang } = useLang();
@@ -75,6 +75,14 @@ export default function Footer() {
             className="inline-flex items-center rounded-full bg-white text-ink text-sm font-semibold px-5 py-2.5 hover:bg-mist hover:scale-105 transition-all"
           >
             {t.contact.whatsapp}
+          </a>
+          <a
+            href={mapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-3 text-sm text-mist hover:text-white transition-colors"
+          >
+            📍 {lang === "ar" ? "موقع المصنع على الخريطة" : "Factory location on map"}
           </a>
         </div>
       </div>
