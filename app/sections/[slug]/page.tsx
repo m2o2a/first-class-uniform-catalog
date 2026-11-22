@@ -12,12 +12,15 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const c = getCategory(params.slug);
   if (!c) return {};
   const d = getDetail(c.slug);
+  const description = c.slug === "restaurant"
+    ? "مصنع يونيفورم مطاعم وكافيهات في مصر للصالة والويتر والكاشير والدليفري والمطبخ، مع تطريز لوجو المطعم وخامات عملية. اطلب عرض سعر وعينة."
+    : d?.about || c.descAr;
   // Absolute title: app/sections/layout.tsx sets its own title, which stops
   // the root template from applying here, so the brand is added once, explicitly.
   return pageMetadata({
     title: `${c.ar} — ${c.descAr} | ${BRAND_AR}`,
     absoluteTitle: true,
-    description: d?.about || c.descAr,
+    description,
     path: `/sections/${c.slug}`,
     image: `/products/${c.slug}/1.jpg`
   });

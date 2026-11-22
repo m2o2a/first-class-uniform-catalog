@@ -92,6 +92,8 @@ export default function CategoryDetail({
         </section>
       )}
 
+      {category.slug === "restaurant" && <RestaurantSeoContent />}
+
       {/* Gallery */}
       <section className="py-14 sm:py-20 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -153,6 +155,64 @@ export default function CategoryDetail({
         </div>
       </section>
     </>
+  );
+}
+
+function RestaurantSeoContent() {
+  return (
+    <section className="py-14 sm:py-20 bg-paper border-b border-line" aria-labelledby="restaurant-uniform-guide">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="max-w-3xl">
+          <p className="text-royal text-xs font-bold tracking-widest mb-3">حل كامل لفريق المطعم</p>
+          <h2 id="restaurant-uniform-guide" className="font-display font-bold text-ink text-2xl sm:text-3xl">
+            يونيفورم مطاعم وكافيهات يعكس هوية المكان
+          </h2>
+          <p className="text-steel leading-8 mt-4">
+            الزي الموحد جزء من تجربة العميل. لذلك نجهز لكل وظيفة في المطعم قطعة عملية ومريحة، من قميص الويتر والأيبرون إلى تيشيرت الكاشير وملابس الدليفري وجاكت الشيف. نطابق الألوان مع ديكور المكان ونطرّز اللوجو بطريقة واضحة وثابتة مع الغسيل.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5 mt-9">
+          {[
+            ["الصالة والكاشير", "قمصان أو بولو وأيبرون مريح للحركة، مع مكان واضح للوجو واسم الموظف."],
+            ["الدليفري", "تيشيرتات بولو عملية بألوان ظاهرة ومقاسات مناسبة للشغل خارج المطعم."],
+            ["المطبخ والشيف", "جاكت شيف ومرايل بخامات تتحمل الحرارة والبقع والغسيل المتكرر."]
+          ].map(([title, text]) => (
+            <article key={title} className="rounded-2xl bg-white border border-line p-5">
+              <h3 className="font-display font-bold text-ink text-lg">{title}</h3>
+              <p className="text-steel text-sm leading-7 mt-2">{text}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8 mt-12">
+          <div>
+            <h2 className="font-display font-bold text-ink text-xl">كيف نجهز طلب يونيفورم المطعم؟</h2>
+            <ol className="mt-5 space-y-3 text-steel text-sm leading-7 list-decimal list-inside">
+              <li>ابعت اسم المطعم أو الكافيه واللوجو وعدد أفراد الفريق.</li>
+              <li>نقترح الخامة واللون والقطع المناسبة لكل وظيفة.</li>
+              <li>نراجع المقاسات والتفاصيل ونجهز عينة أو تصور مبدئي.</li>
+              <li>نبدأ الإنتاج بعد اعتماد التصميم وننسق التسليم.</li>
+            </ol>
+          </div>
+          <div>
+            <h2 className="font-display font-bold text-ink text-xl">أسئلة شائعة عن يونيفورم المطاعم</h2>
+            <div className="mt-5 space-y-4">
+              {[
+                ["هل يمكن تطريز لوجو المطعم؟", "نعم، نضيف تطريز اللوجو على القميص أو البولو أو الأيبرون حسب التصميم."],
+                ["ما الخامة المناسبة للويتر؟", "البيكيه أو القطن المخلوط مناسب للقميص، مع كانفاس أو تويل للأيبرون حسب الاستخدام."],
+                ["هل تنفذون كميات صغيرة أو كبيرة؟", "نراجع الكمية والمقاسات أولًا ونرسل لك عرض سعر مناسب قبل التنفيذ."]
+              ].map(([question, answer]) => (
+                <div key={question} className="rounded-xl bg-white border border-line p-4">
+                  <h3 className="font-bold text-ink text-sm">{question}</h3>
+                  <p className="text-steel text-sm leading-7 mt-1">{answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

@@ -35,7 +35,7 @@ export const dictionary = {
       call: "اتصل الآن",
       gallery: "معرض الصور",
       placeholderNote:
-        "صور المنتجات الحقيقية لهذا القسم هتتضاف هنا — المساحة جاهزة ومهيأة للعرض الاحترافي."
+        "صور وموديلات حقيقية من تصميمات فرست كلاس — ابعتلنا صورة الموديل أو اللوجو ونجهز لك اقتراح مناسب."
     },
     projects: {
       eyebrow: "أعمال منفذة بالفعل",
@@ -102,7 +102,7 @@ export const dictionary = {
       call: "Call Now",
       gallery: "Gallery",
       placeholderNote:
-        "Real product photography for this section drops in here — the layout is production-ready."
+        "Real uniform styles from First Class — send us your preferred style or logo and we will prepare a suitable proposal."
     },
     projects: {
       eyebrow: "Delivered work",
