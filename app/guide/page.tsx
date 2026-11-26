@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
-import pricing from "@/lib/pricing-rules.json";
+import { pricing, DEPOSIT_PERCENT } from "@/lib/pricing";
 import PageBanner from "@/components/PageBanner";
 import SayingsStrip from "@/components/SayingsStrip";
 
@@ -23,7 +23,7 @@ const steps = [
   { ar: "اختار المنتج", en: "Pick a product", dAr: "من الأقسام أو كل المنتجات، واضغط على الصورة.", dEn: "From sections or all products, tap a photo." },
   { ar: "خصّص وشوف السعر", en: "Customize & price", dAr: "جرّب لونك ولوجوك، واحسب السعر التقريبي.", dEn: "Try your color & logo, get an estimate." },
   { ar: "اطلب عينة لو محتاج", en: "Order a sample", dAr: "شوف الخامة والتقفيل بإيدك قبل الكمية.", dEn: "Feel the fabric and finish first." },
-  { ar: "أكّد وادفع", en: "Confirm & pay", dAr: "جاهز: دفع كامل. بتطريز: عربون 50%. كميات كبيرة: عرض سعر.", dEn: "Ready: full pay. Embroidered: 50% deposit. Bulk: quote." },
+  { ar: "أكّد وادفع", en: "Confirm & pay", dAr: `جاهز: دفع كامل. بتطريز: عربون ${DEPOSIT_PERCENT}%. كميات كبيرة: عرض سعر.`, dEn: `Ready: full pay. Embroidered: ${DEPOSIT_PERCENT}% deposit. Bulk: quote.` },
   { ar: "استلم", en: "Receive", dAr: "بنتابع معاك مراحل التصنيع لحد التسليم.", dEn: "We update you until delivery." }
 ];
 

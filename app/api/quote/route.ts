@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import pricing from "@/lib/pricing-rules.json";
+import { pricing, CURRENCY } from "@/lib/pricing";
 
 type EmbroideryItem = {
   placement: string;
@@ -60,7 +60,7 @@ function localCompute(input: QuoteInput) {
     total_logos: totalLogos,
     total_price: total,
     discount_percent: tier.discount_percent,
-    currency: "EGP",
+    currency: CURRENCY,
     recommendation_ar,
     source: "local"
   };
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Fallback: compute locally from lib/pricing-rules.json so the feature
+    // Fallback: compute locally from lib/pricing.ts so the feature
     // always works, even before the n8n webhook is set up.
     const quote = localCompute(body);
     return NextResponse.json({ ok: true, quote });

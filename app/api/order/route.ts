@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { notifyOwner } from "@/lib/notify";
+import { DEPOSIT_PERCENT } from "@/lib/pricing";
 
 type Item = { name: string; src: string; qty: number; type: "ready" | "custom"; logos: number; estimate: number };
 
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
       Math.random().toString(36).slice(2, 6).toUpperCase();
 
     const modeLabel =
-      mode === "full" ? "دفع كامل" : mode === "deposit" ? "عربون 50%" : "طلب عرض سعر";
+      mode === "full" ? "دفع كامل" : mode === "deposit" ? `عربون ${DEPOSIT_PERCENT}%` : "طلب عرض سعر";
 
     const lines = (items as Item[])
       .map(
