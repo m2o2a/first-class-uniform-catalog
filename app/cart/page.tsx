@@ -63,13 +63,17 @@ export default function CartPage() {
       }));
       const res = await fetch("/api/order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {})
+        },
         body: JSON.stringify({ customer, items: payloadItems, mode, total, due, lang })
       });
       const data = await res.json();
       if (!data.ok) throw new Error();
 
-      if (supabase && session) {
+      // The server already saved it when SUPABASE_SERVICE_ROLE_KEY is set
+      if (!data.saved && supabase && session) {
         await supabase.from("orders").insert({
           user_id: session.user.id,
           order_no: data.orderNo,

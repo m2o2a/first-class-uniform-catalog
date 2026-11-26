@@ -6,16 +6,9 @@ import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { supabase, useSession } from "@/lib/supabase";
 import PageBanner from "@/components/PageBanner";
+import { statusAr } from "@/lib/orders";
 
 type Order = { id: string; order_no: string; mode: string; total: number; due: number; status: string; created_at: string; items: { name: string; qty: number }[] };
-
-const statusAr: Record<string, string> = {
-  new: "جديد",
-  confirmed: "مؤكد",
-  in_production: "في التصنيع",
-  ready: "جاهز للتسليم",
-  delivered: "اتسلم"
-};
 
 export default function AccountPage() {
   const { lang } = useLang();
@@ -32,6 +25,7 @@ export default function AccountPage() {
     supabase
       .from("orders")
       .select("*")
+      .eq("user_id", session.user.id) // admins can read every order — keep this page to the user's own
       .order("created_at", { ascending: false })
       .then(({ data }) => setOrders((data as Order[]) || []));
   }, [session]);

@@ -30,6 +30,7 @@ app/
   projects/page.tsx       → سابقة الأعمال حسب القطاع
   clients/page.tsx        → شعارات العملاء
   contact/page.tsx        → واتساب / اتصال / مشاركة الكتالوج
+  admin/page.tsx          → لوحة التحكم: الطلبات والدفعات والتصنيع (شوف ADMIN_SETUP.md)
 components/               → أجزاء الواجهة القابلة لإعادة الاستخدام
 lib/
   categories.ts           → قائمة الأقسام (عدّل هنا لو غيّرت الأقسام)
