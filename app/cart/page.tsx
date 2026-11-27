@@ -130,6 +130,9 @@ export default function CartPage() {
                     {paymentConfig.vodafoneCash && (
                       <li>{ar ? "فودافون كاش" : "Vodafone Cash"}: <b className="text-ink">{paymentConfig.vodafoneCash}</b></li>
                     )}
+                    {paymentConfig.accountName && (
+                      <li>{ar ? "باسم" : "Account name"}: <b className="text-ink">{paymentConfig.accountName}</b></li>
+                    )}
                   </ul>
                 ) : (
                   <p className="text-sm text-steel">
@@ -204,7 +207,7 @@ export default function CartPage() {
                           <div>
                             <p className="font-bold text-ink text-sm">{i.name}</p>
                             <p className="text-xs text-steel mt-0.5">
-                              {i.type === "custom" ? (ar ? "بتطريز — عربون 50%" : "Embroidered — 50% deposit") : ar ? "جاهز — دفع كامل" : "Ready — full payment"}
+                              {i.type === "custom" ? (ar ? `بتطريز — عربون ${DEPOSIT_PERCENT}%` : `Embroidered — ${DEPOSIT_PERCENT}% deposit`) : ar ? "جاهز — دفع كامل" : "Ready — full payment"}
                             </p>
                           </div>
                           <button onClick={() => remove(i.id)} className="text-steel hover:text-signal text-sm" aria-label="Remove">
@@ -274,6 +277,14 @@ export default function CartPage() {
                   <p className="text-[11px] text-steel mt-1">
                     {ar ? "أسعار تقديرية — السعر النهائي بيتأكد معاك." : "Estimates — final price confirmed with you."}
                   </p>
+                  {mode !== "quote" && (paymentConfig.instapay || paymentConfig.vodafoneCash) && (
+                    <div className="mt-2 pt-2 border-t border-line text-xs text-steel space-y-0.5">
+                      <p className="font-semibold text-ink">{ar ? "طرق الدفع (بعد تأكيد الطلب)" : "Payment methods (after confirming)"}</p>
+                      {paymentConfig.instapay && <p>InstaPay: <b className="text-ink">{paymentConfig.instapay}</b></p>}
+                      {paymentConfig.vodafoneCash && <p>{ar ? "فودافون كاش" : "Vodafone Cash"}: <b className="text-ink">{paymentConfig.vodafoneCash}</b></p>}
+                      {paymentConfig.accountName && <p>{ar ? "باسم" : "Account name"}: <b className="text-ink">{paymentConfig.accountName}</b></p>}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2.5 pt-1">

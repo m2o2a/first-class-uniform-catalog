@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/lang-context";
 import { useCart, OrderType } from "@/lib/cart-context";
 import { whatsappLink } from "@/lib/contact";
+import { DEPOSIT_PERCENT } from "@/lib/pricing";
 
 type Props = {
   open: boolean;
@@ -145,7 +146,7 @@ export default function ProductModal({ open, onClose, src, name, categorySlug, o
                         {ar ? "🧵 اطلب بتطريز لوجو شركتك" : "🧵 Order with your logo embroidered"}
                       </span>
                       <span className="block text-steel text-xs mt-1">
-                        {ar ? "عربون 50% والباقي عند الاستلام" : "50% deposit, rest on delivery"}
+                        {ar ? `عربون ${DEPOSIT_PERCENT}% والباقي عند الاستلام` : `${DEPOSIT_PERCENT}% deposit, rest on delivery`}
                       </span>
                     </button>
                   </div>

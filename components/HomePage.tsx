@@ -10,12 +10,13 @@ import SectorGrid from "@/components/SectorGrid";
 import { categories, productTypes } from "@/lib/categories";
 import { sectors } from "@/lib/sectors";
 import SayingsStrip from "@/components/SayingsStrip";
+import { DEPOSIT_PERCENT } from "@/lib/pricing";
 
 function ActionCards() {
   const { lang } = useLang();
   const ar = lang === "ar";
   const cards = [
-    { href: "/all-products", icon: "🛒", t: ar ? "اطلب دلوقتي" : "Order now", d: ar ? "جاهز: دفع كامل — بتطريز: عربون 50%" : "Ready: full pay — Embroidered: 50% deposit" },
+    { href: "/all-products", icon: "🛒", t: ar ? "اطلب دلوقتي" : "Order now", d: ar ? `جاهز: دفع كامل — بتطريز: عربون ${DEPOSIT_PERCENT}%` : `Ready: full pay — Embroidered: ${DEPOSIT_PERCENT}% deposit` },
     { href: "/all-products", icon: "📦", t: ar ? "اطلب عينة" : "Request a sample", d: ar ? "شوف الخامة بإيدك قبل الكمية" : "Feel the fabric before bulk" },
     { href: "/quote", icon: "🧮", t: ar ? "احسب السعر" : "Get a price", d: ar ? "سعر تقريبي فوري حسب الخامة والعدد" : "Instant estimate by fabric & qty" },
     { href: "/account", icon: "👤", t: ar ? "اعمل حساب" : "Create account", d: ar ? "تابع طلباتك وكررها بسهولة" : "Track and reorder easily" }
