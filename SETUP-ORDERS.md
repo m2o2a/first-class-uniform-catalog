@@ -119,3 +119,10 @@ Place a test order on the site and check:
 - the confirmation screen does **not** show "Last step: tap below to send your order on WhatsApp" (that message means no channel confirmed delivery)
 - a new row appears in the **Orders** tab, the email reaches Instinct (which WhatsApps you), and the direct WhatsApp message arrives once CallMeBot is set
 - Vercel → **Logs** shows `[notifyOwner order FC-…] sheet OK` and `whatsapp OK`. If you see `FAILED`, the line says why.
+
+---
+
+## حالة التركيب (28 نوفمبر 2026)
+- تم نشر سكريبت جوجل كـ Web app من حساب محمد (Deploy → Web app → Execute as: Me → Who has access: Anyone).
+- تم ضبط APPS_SCRIPT_URL في Vercel (Production + Preview).
+- رابط الـ /exec لا يتحط في الريبو عمدًا: الريبو عام وأي حد يقدر يبعت طلبات وهمية للويب هوك. الرابط محفوظ عند محمد وفي Vercel.
