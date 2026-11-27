@@ -124,5 +124,6 @@ Place a test order on the site and check:
 
 ## حالة التركيب (28 نوفمبر 2026)
 - تم نشر سكريبت جوجل كـ Web app من حساب محمد (Deploy → Web app → Execute as: Me → Who has access: Anyone).
-- تم ضبط APPS_SCRIPT_URL في Vercel (Production + Preview).
+- تم ضبط LEAD_SHEET_WEBHOOK_URL في Vercel (Production + Preview).
 - رابط الـ /exec لا يتحط في الريبو عمدًا: الريبو عام وأي حد يقدر يبعت طلبات وهمية للويب هوك. الرابط محفوظ عند محمد وفي Vercel.
+
